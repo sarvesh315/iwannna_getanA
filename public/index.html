@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Haven — A Student Wellness Space</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- ===================== AUTH SCREEN ===================== -->
+<div id="authScreen">
+  <div class="auth-card">
+    <div class="auth-side">
+      <div>
+        <div class="eyebrow" style="color:#cfe0d1;">Haven</div>
+        <h1 style="color:var(--white); font-size:28px;">A quiet corner of school, online.</h1>
+        <p>Haven is a small wellness space built by students, for students — a place to breathe, check in with your mood, and find support before things feel too heavy.</p>
+      </div>
+      <div class="breathing-wrap"><div class="breath-circle"></div></div>
+      <div class="demo-note">
+        <strong>Try the demo account</strong><br>
+        Username: <strong>student</strong> &nbsp;·&nbsp; Password: <strong>wellness123</strong><br>
+        <span style="opacity:0.8;">(created automatically the first time you sign up with it, or via the seed script — see README)</span>
+      </div>
+    </div>
+
+    <div class="auth-form">
+      <div class="tab-row">
+        <button class="tab-btn active" id="tabLoginBtn" onclick="switchTab('login')">Log in</button>
+        <button class="tab-btn" id="tabSignupBtn" onclick="switchTab('signup')">Sign up</button>
+      </div>
+
+      <!-- LOGIN FORM -->
+      <div id="loginForm">
+        <h2 style="font-size:20px;">Welcome back</h2>
+
+        <a class="google-btn" href="/api/auth/google">
+          <svg width="18" height="18" viewBox="0 0 18 18"><path fill="#4285F4" d="M17.64 9.2c0-.64-.06-1.25-.16-1.84H9v3.48h4.84a4.14 4.14 0 0 1-1.8 2.72v2.26h2.92c1.7-1.57 2.68-3.88 2.68-6.62z"/><path fill="#34A853" d="M9 18c2.43 0 4.47-.8 5.96-2.18l-2.92-2.26c-.81.54-1.85.86-3.04.86-2.34 0-4.32-1.58-5.03-3.7H.98v2.33A9 9 0 0 0 9 18z"/><path fill="#FBBC05" d="M3.97 10.72A5.4 5.4 0 0 1 3.68 9c0-.6.1-1.18.29-1.72V4.95H.98A9 9 0 0 0 0 9c0 1.45.35 2.83.98 4.05z"/><path fill="#EA4335" d="M9 3.58c1.32 0 2.51.45 3.44 1.35l2.58-2.58C13.46.89 11.43 0 9 0A9 9 0 0 0 .98 4.95l2.99 2.33C4.68 5.16 6.66 3.58 9 3.58z"/></svg>
+          Continue with Google
+        </a>
+        <div class="divider">or</div>
+
+        <label for="loginUser">Username</label>
+        <input id="loginUser" type="text" placeholder="e.g. student" autocomplete="username">
+        <label for="loginPass">Password</label>
+        <div class="password-field">
+          <input id="loginPass" type="password" placeholder="Enter your password" autocomplete="current-password">
+          <button type="button" class="toggle-pass" onclick="togglePassword('loginPass', this)">Show</button>
+        </div>
+        <div class="remember-row">
+          <label><input type="checkbox" id="rememberMe" checked> Remember me</label>
+          <button class="link-btn" onclick="openForgotPassword()">Forgot password?</button>
+        </div>
+        <div class="form-msg" id="loginMsg"></div>
+        <button class="primary-btn" id="loginBtn" onclick="handleLogin()">Log in</button>
+        <div class="hint">Real backend: passwords are hashed with bcrypt, sessions use signed JWTs, and Google sign-in uses real OAuth once you add your own credentials (see README).</div>
+      </div>
+
+      <!-- SIGNUP FORM -->
+      <div id="signupForm" style="display:none;">
+        <h2 style="font-size:20px;">Create your account</h2>
+
+        <a class="google-btn" href="/api/auth/google">
+          <svg width="18" height="18" viewBox="0 0 18 18"><path fill="#4285F4" d="M17.64 9.2c0-.64-.06-1.25-.16-1.84H9v3.48h4.84a4.14 4.14 0 0 1-1.8 2.72v2.26h2.92c1.7-1.57 2.68-3.88 2.68-6.62z"/><path fill="#34A853" d="M9 18c2.43 0 4.47-.8 5.96-2.18l-2.92-2.26c-.81.54-1.85.86-3.04.86-2.34 0-4.32-1.58-5.03-3.7H.98v2.33A9 9 0 0 0 9 18z"/><path fill="#FBBC05" d="M3.97 10.72A5.4 5.4 0 0 1 3.68 9c0-.6.1-1.18.29-1.72V4.95H.98A9 9 0 0 0 0 9c0 1.45.35 2.83.98 4.05z"/><path fill="#EA4335" d="M9 3.58c1.32 0 2.51.45 3.44 1.35l2.58-2.58C13.46.89 11.43 0 9 0A9 9 0 0 0 .98 4.95l2.99 2.33C4.68 5.16 6.66 3.58 9 3.58z"/></svg>
+          Sign up with Google
+        </a>
+        <div class="divider">or</div>
+
+        <label for="signupName">First name</label>
+        <input id="signupName" type="text" placeholder="e.g. Jamie">
+        <label for="signupUser">Choose a username</label>
+        <input id="signupUser" type="text" placeholder="e.g. jamie_r">
+        <label for="signupPass">Choose a password</label>
+        <div class="password-field">
+          <input id="signupPass" type="password" placeholder="At least 6 characters" oninput="updateStrength()">
+          <button type="button" class="toggle-pass" onclick="togglePassword('signupPass', this)">Show</button>
+        </div>
+        <div class="strength-bar"><div class="strength-fill" id="strengthFill"></div></div>
+        <div class="strength-text" id="strengthText">Password strength: —</div>
+        <div class="form-msg" id="signupMsg"></div>
+        <button class="primary-btn" id="signupBtn" onclick="handleSignup()">Create account</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== FORGOT PASSWORD MODAL ===================== -->
+<div class="modal-overlay" id="forgotModal">
+  <div class="modal-box">
+    <button class="modal-close" onclick="closeModal('forgotModal')">✕</button>
+    <h3 style="font-size:17px;">Reset your password</h3>
+
+    <div class="step active" id="forgotStep1">
+      <label for="forgotUser">Username</label>
+      <input id="forgotUser" type="text" placeholder="Enter your username">
+      <div class="form-msg" id="forgotMsg1"></div>
+      <button class="primary-btn" onclick="sendResetCode()">Send reset code</button>
+    </div>
+
+    <div class="step" id="forgotStep2">
+      <div class="hint">Demo mode (no email service wired up) — here's the code that would normally be emailed:</div>
+      <div style="font-family:Georgia,serif; font-size:24px; letter-spacing:6px; color:var(--sage-deep); text-align:center;" id="demoCode"></div>
+      <label for="codeInput">Enter code</label>
+      <input id="codeInput" type="text" placeholder="6-digit code">
+      <div class="form-msg" id="forgotMsg2"></div>
+      <button class="primary-btn" onclick="verifyResetCode()">Verify code</button>
+    </div>
+
+    <div class="step" id="forgotStep3">
+      <label for="newPass">New password</label>
+      <input id="newPass" type="password" placeholder="At least 6 characters">
+      <div class="form-msg" id="forgotMsg3"></div>
+      <button class="primary-btn" onclick="finishReset()">Reset password</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== DASHBOARD ===================== -->
+<div id="dashboard">
+  <div class="topbar">
+    <div class="brand">
+      <div class="brand-mark">H</div>
+      <div>
+        <div style="font-weight:700;">Haven</div>
+        <div style="font-size:11.5px; color:#9a9585;">Student Wellness Space</div>
+      </div>
+    </div>
+    <button class="logout-btn" onclick="handleLogout()">Log out</button>
+  </div>
+
+  <main>
+    <div class="welcome-row">
+      <div class="eyebrow">Today</div>
+      <h1 id="welcomeText" style="font-size:26px;">Welcome back</h1>
+      <div style="color:#7d7869; font-size:14px;" id="dateText"></div>
+    </div>
+
+    <div class="grid">
+
+      <div class="card breathe-card">
+        <div class="eyebrow">Reset</div>
+        <h3>Guided breathing</h3>
+        <div class="breath-circle small"></div>
+        <div id="breathLabel">Breathe in... breathe out...</div>
+        <div style="font-size:12.5px; color:#9a9585; margin-top:6px;">Follow the circle for four slow breaths.</div>
+      </div>
+
+      <div class="card">
+        <div class="eyebrow">Check in</div>
+        <h3>How are you feeling?</h3>
+        <div class="mood-row" id="moodRow"></div>
+        <div class="mood-log" id="moodLog">Loading your check-ins…</div>
+      </div>
+
+      <div class="card">
+        <div class="eyebrow">Calm corner</div>
+        <h3>A moment to reflect</h3>
+        <div class="quote-text" id="quoteText"></div>
+        <button class="ghost-btn" onclick="nextQuote()">Next thought →</button>
+      </div>
+
+      <div class="card">
+        <div class="eyebrow">Journal</div>
+        <h3>Three good things</h3>
+        <textarea id="journalInput" placeholder="What's one small good thing about today?"></textarea>
+        <button class="primary-btn" style="width:100%; margin-top:10px;" onclick="addJournal()">Save entry</button>
+        <div class="journal-list" id="journalList"></div>
+      </div>
+
+      <div class="card" style="grid-column: span 2;">
+        <div class="eyebrow">Get support</div>
+        <h3>If you need to talk to someone</h3>
+        <div class="resource-item">
+          <span><span class="label">For guardians or parents</span> — school health portal</span>
+          <a href="https://health.globalindianschool.org/login" target="_blank" rel="noopener noreferrer" class="link-btn">Open portal →</a>
+        </div>
+        <div class="resource-item">
+          <span><span class="label">Samaritans of Singapore (SOS)</span> — 24-hour helpline</span>
+          <span>1-767</span>
+        </div>
+        <div class="resource-item">
+          <span><span class="label">A trusted adult</span> — parent, teacher, or form tutor</span>
+          <span>always an option</span>
+        </div>
+        <div class="resource-item">
+          <span><span class="label">Give us feedback</span> — help improve Haven, 2 minutes</span>
+          <a href="https://forms.gle/ZLUZxKpBoWNDQrih7" target="_blank" rel="noopener noreferrer" class="link-btn">Open survey →</a>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <footer>Haven — a student-made wellness prototype.</footer>
+</div>
+
+<script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,16 @@
+{
+  "users": [
+    {
+      "id": "1783222874151",
+      "name": "Alex",
+      "username": "student",
+      "email": null,
+      "passwordHash": "$2b$10$Mgjgq4OPN.mMy6CJOKolLeBnaOorgwj7LyEwbmqXZhSFpZ1RNaxEK",
+      "provider": "local",
+      "createdAt": "2026-07-05T03:41:14.151Z"
+    }
+  ],
+  "moods": [],
+  "journal": [],
+  "resets": []
+}
