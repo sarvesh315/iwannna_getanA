@@ -1,50 +1,31 @@
-import express from "express";
 import dotenv from "dotenv";
-import cors from "cors";
-import cookieParser from "cookie-parser";
-import helmet from "helmet";
-import rateLimit from "express-rate-limit";
+dotenv.config();
 
-import connectDB from "./config/db.js";
+import express from "express";
+import mongoose from "mongoose";
+
 import authRoutes from "./routes/auth.routes.js";
 import wellnessRoutes from "./routes/wellness.routes.js";
 
-dotenv.config();
+console.log("MONGO_URI:", process.env.MONGO_URI);
 
 const app = express();
 
-/* ---------------- SECURITY ---------------- */
-app.use(helmet());
+app.use(express.json());
 
-app.use(rateLimit({
-  windowMs: 15 * 60 * 1000,
-  max: 100
-}));
+try {
+  await mongoose.connect(process.env.MONGO_URI);
+  console.log("MongoDB Connected");
+} catch (err) {
+  console.error("MongoDB connection error:", err);
+  process.exit(1);
+}
 
-/* ---------------- CORE ---------------- */
-app.use(cors({
-  origin: process.env.CLIENT_URL,
-  credentials: true
-}));
-
-app.use(express.json({ limit: "10kb" }));
-app.use(cookieParser());
-
-/* ---------------- DB ---------------- */
-connectDB();
-
-/* ---------------- ROUTES ---------------- */
 app.use("/api/auth", authRoutes);
 app.use("/api/wellness", wellnessRoutes);
 
-/* ---------------- HEALTH CHECK ---------------- */
-app.get("/api/health", (req, res) => {
-  res.json({ status: "ok", time: new Date() });
-});
-
-/* ---------------- START ---------------- */
-const PORT = process.env.PORT || 4000;
+const PORT = process.env.PORT || 5000;
 
 app.listen(PORT, () => {
-  console.log(`🚀 Server running on port ${PORT}`);
+  console.log(`Server running on port ${PORT}`);
 });
